@@ -20,6 +20,17 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
+                'rules' => [
+                    [
+                        'actions' => ['login', 'error'],
+                        'allow' => true,
+                    ],
+                    [
+                        'actions' => ['logout', 'index'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
             ],
             'verbs' => [
                 'class' => VerbFilter::className(),
@@ -33,7 +44,6 @@ class SiteController extends Controller
     /**
      * @inheritdoc
      */
-
     public function actions()
     {
         return [
@@ -63,6 +73,8 @@ class SiteController extends Controller
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
+
+        $this->loyout = 'main-login';
 
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
